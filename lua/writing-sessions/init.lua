@@ -118,30 +118,5 @@ M.setup = function()
   -- TODO
 end
 
-local function test()
-  test_buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_set_current_buf(test_buf)
-
-  M.setup()
-
-  vim.api.nvim_buf_set_lines(0, 0, -1, false, { "Hello world" })
-  
-  -- 2. Start session
-  M.start_writing_session()
-  
-  -- 3. Add more text
-  vim.api.nvim_buf_set_lines(0, -1, -1, false, { "This is a test" })
-  
-  -- 4. Assert statusline contains the word count (approx 4-6 words)
-  local status = M.get_statusline_info()
-
-  M.terminate_writing_session();
-
-
-  vim.api.nvim_buf_delete(test_buf, {force = true})
-  print(status)
-  
-end
-
 return M
 
