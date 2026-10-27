@@ -3,26 +3,43 @@ local M = {}
 local session_state = {
   starting_words = nil,
   starting_time = nil,
-  ending_time = nil,
+  previous_duration = nil,
   ending_words = nil,
-  session_started = false
+  session_started = false,
 }
+
 
 -- state at the start of a session
 function M.init_session()
   session_state.starting_words = vim.fn.wordcount().words
+  session_state.starting_time = os.time()
+  session_state.previous_duration = 0
+  session_state.ending_words = nil
+  session_state.session_started = true
+end
+
+
+-- set ending values and set session_started state to false
+function M.terminate_session()
+  local end_time = os.time()
+
+  session_state.previous_duration = end_time - session_state.starting_time + session_state.previous_duration
+  session_state.ending_words = vim.fn.wordcount().words
+  session_state.session_started = false
+end
+
+
+-- we restart a new session timer and will add the previous duration to it
+-- the starting words are the same as the start of the session
+-- this will still count any words written during the pause, but that's a trafeoff
+-- we need to make
+function M.resume_session()
   session_state.starting_time = os.time()
   session_state.ending_time = nil
   session_state.ending_words = nil
   session_state.session_started = true
 end
 
--- set ending values and set session_started state to false
-function M.terminate_session()
-  session_state.ending_time = os.time()
-  session_state.ending_words = vim.fn.wordcount().words
-  session_state.session_started = false
-end
 
 function M.get_total_words()
   local current_words = nil
@@ -38,15 +55,11 @@ end
 
 
 function M.get_time_elapsed()
-  local current_time = nil
-
   if session_state.session_started then
-    current_time = os.time()
+    return os.time() - session_state.starting_time + session_state.previous_duration
   else
-    current_time = session_state.ending_time
+    return session_state.previous_duration
   end
-
-  return current_time - session_state.starting_time
 end
 
 
@@ -54,4 +67,11 @@ function M.session_started()
   return session_state.session_started
 end
 
+
+-- if previous durarion is nil, it means that there is no previous session yet
+function M.previous_session_exists()
+  return session_state.previous_duration ~= nil
+end
+
 return M
+

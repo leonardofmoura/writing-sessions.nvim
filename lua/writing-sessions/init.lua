@@ -36,6 +36,28 @@ function M.terminate_writing_session()
 end
 
 
+function M.resume_writing_session()
+  if state.session_started() then
+    vim.notify("Session already started.", vim.log.levels.INFO)
+    return
+
+  elseif not state.previous_session_exists() then
+    vim.notify("No previous session to resume.", vim.log.levels.INFO)
+    return
+  end
+
+  local total_words = state.get_total_words()
+  local total_time = state.get_time_elapsed()
+  local duration = utils.format_time(total_time)
+
+  state.resume_session()
+
+  local session_info = string.format("󰴓 %d | 󰥔  %s ", total_words, duration)
+
+  vim.notify("Writing session resumed. Session info: " .. (session_info), vim.log.levels.INFO)
+end
+
+
 function M.get_statusline_info()
   if not state.session_started() then
     return ""

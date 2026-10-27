@@ -13,12 +13,17 @@ local function test()
   vim.api.nvim_buf_set_lines(0, -1, -1, false, { "This is a test" })
 
   local status = ws.get_statusline_info()
+  print("Statusline info: ".. (status))
 
   ws.terminate_writing_session();
 
+  ws.resume_writing_session();
+
+  vim.api.nvim_buf_set_lines(0, -1, -1, false, { "writing session resumed" })
+
+  ws.terminate_writing_session();
 
   vim.api.nvim_buf_delete(test_buf, {force = true})
-  print(status)
 end
 
 test()
