@@ -25,7 +25,7 @@ function M.terminate_writing_session()
   state.terminate_session()
 
   local total_words = state.get_total_words()
-  local total_time= state.get_time_elapsed()
+  local total_time = state.get_time_elapsed()
 
   local duration = utils.format_time(total_time)
   local wph = utils.calculate_wph(total_words,total_time)
@@ -37,13 +37,13 @@ end
 
 
 function M.get_statusline_info()
-  if not state.session_started  then
+  if not state.session_started() then
     return ""
   end
 
-  local total_words state.get_total_words()
+  local total_words = state.get_total_words()
   local total_time = state.get_time_elapsed()
-  local duration = format_time(total_time)
+  local duration = utils.format_time(total_time)
 
   -- TODO: configure text and info shown
   return string.format("󰴓 %d | 󰥔  %s", total_words, duration)
@@ -54,8 +54,8 @@ function M.get_session_progress()
   local total_words = state.get_total_words()
   local total_time = state.get_time_elapsed()
 
-  local duration = format_time(total_time)
-  local wph = calculate_wph(total_words,total_time)
+  local duration = utils.format_time(total_time)
+  local wph = utils.calculate_wph(total_words,total_time)
 
   local progress = string.format("󰴓 %d | 󰥔  %s |   %d", total_words, duration, wph)
 
@@ -63,9 +63,10 @@ function M.get_session_progress()
 end
 
 
-M.setup = function()
+function M.setup()
   -- print("Writing Sessions is loaded!")
   -- TODO
 end
 
 return M
+
