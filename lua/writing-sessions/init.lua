@@ -36,7 +36,7 @@ function M.terminate_writing_session()
 end
 
 
-M.get_statusline_info = function()
+function M.get_statusline_info()
   if not state.session_started  then
     return ""
   end
@@ -50,7 +50,7 @@ M.get_statusline_info = function()
 end
 
 
-M.get_session_progress = function()
+function M.get_session_progress()
   local total_words = state.get_total_words()
   local total_time = state.get_time_elapsed()
 
@@ -68,4 +68,4 @@ M.setup = function()
   -- TODO
 end
 
-return M;
+return M
